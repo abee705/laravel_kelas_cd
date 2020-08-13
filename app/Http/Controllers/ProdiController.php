@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Mahasiswa;
 use App\Prodi;
+use App\Mahasiswa;
 use DataTables;
 use Illuminate\Http\Request;
 
-class MahasiswaController extends Controller
+class ProdiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,22 +16,21 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        return view('mahasiswa.index');
+        return view('prodi.index');
     }
 
-    public function mhs_list()
+    public function prodi_list()
     {
-        $mhs = Mahasiswa::with('prodi')->get();
-        return Datatables::of($mhs)
+        $prodi = Prodi::all();
+        return Datatables::of($prodi)
             ->addIndexColumn()
-            ->addColumn('action', function ($mhs) {
-                $action = '<a class="text-primary" href="/mhs/edit/'.$mhs->nim.'">Edit</a>';
-                $action .= ' | <a class="text-danger" href="/mhs/delete/'.$mhs->nim.'">Hapus</a>';
+            ->addColumn('action', function ($prodi) {
+                $action = '<a class="text-primary" href="/prodi/edit/'.$prodi->kode_prodi.'">Edit</a>';
+                $action .= ' | <a class="text-danger" href="/prodi/delete/'.$prodi->kode_prodi.'">Hapus</a>';
                 return $action;
             })
             ->make(true);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -40,7 +39,7 @@ class MahasiswaController extends Controller
     public function create()
     {
         $prodi = Prodi::all();
-        return view('mahasiswa.create', compact('prodi'));
+        return view('prodi.create', compact('prodi'));
     }
 
     /**
@@ -52,21 +51,21 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nim' => 'required',
-            'nama_lengkap' => 'required',
+            'kode_prodi' => 'required',
+            'nama_prodi' => 'required',
         ]);
-        Mahasiswa::create($request->all());
-        return redirect()->route('mhs.index')
+        Prodi::create($request->all());
+        return redirect()->route('prodi.index')
                         ->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Mahasiswa  $mahasiswa
+     * @param  \App\Prodi  $prodi
      * @return \Illuminate\Http\Response
      */
-    public function show(Mahasiswa $mahasiswa)
+    public function show(Prodi $prodi)
     {
         //
     }
@@ -74,46 +73,46 @@ class MahasiswaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Mahasiswa  $mahasiswa
+     * @param  \App\Prodi  $prodi
      * @return \Illuminate\Http\Response
      */
-    public function edit(Mahasiswa $mahasiswa, $id)
+    public function edit(Prodi $prodi, $id)
     {
-        $prodi = Prodi::all();
-        $mhs = Mahasiswa::find($id);
-        return view ('mahasiswa.edit', compact('prodi', 'mhs'));
+        
+        $prodi = Prodi::find($id);
+        return view ('prodi.edit', compact('prodi'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Mahasiswa  $mahasiswa
+     * @param  \App\Prodi  $prodi
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Mahasiswa $mahasiswa)
+    public function update(Request $request, Prodi $prodi)
     {
         $request->validate([
-            'nama_lengkap' => 'required',
+            'nama_prodi' => 'required',
         ]);
 
-        $mahasiswa->update($request->all());
+        $prodi->update($request->all());
 
-        return redirect()->route('mhs.index')
+        return redirect()->route('prodi.index')
                         ->with('success', 'Data berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Mahasiswa  $mahasiswa
+     * @param  \App\Prodi  $prodi
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Mahasiswa $mahasiswa)
+    public function destroy(Prodi $prodi)
     {
-        $mahasiswa->delete();
+        $prodi->delete();
 
-        return redirect()->route('mhs.index')
+        return redirect()->route('prodi.index')
                         ->with('success', 'Data berhasil dihapus');
     }
 }
